@@ -16,4 +16,9 @@ public interface FamilyMembersService {
 	
 	public Mono<Void> delete(FamilyMembers familyMembers);
 	
+	public Flux<FamilyMembers> findBynombre(String nombre);
+	  
+	public Mono<FamilyMembers> findBynumeroIdentificacion(String numeroIdentificacion);
+	
+	
 }
