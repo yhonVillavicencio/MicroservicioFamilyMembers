@@ -1,5 +1,6 @@
 package com.microservicio;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -13,6 +14,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.microservicio.model.FamilyMembers;
 import com.microservicio.repository.FamilyMembersRepository;
+
+import reactor.core.publisher.Mono;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,59 +45,59 @@ public class MicroservicioFamilyMembersApplicationTests {
 	  }
 
 	  @Test
-	  public void BuscarPorNombre() {
-	    Student student = servi.findBynombre("brigido").block();
+	  public void BuscarPorNumeroIdentificacion() {
+	    FamilyMembers fm = servi.findBynumeroIdentificacion("").block();
 	    client.get()
-	      .uri("/api/v2/st/{id}", Collections.singletonMap("id",student.getCodigoStudent()))
+	      .uri("/api/v2/st/{id}", Collections.singletonMap("id",fm.getCodigoStudent()))
 	      .accept(MediaType.APPLICATION_JSON_UTF8)
 	      .exchange()
 	      .expectStatus().isOk()
 	      .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
 	      .expectBody()
 	      .jsonPath("$.codigoStudent").isNotEmpty()
-	      .jsonPath("$.nombre").isEqualTo("brigido");
+	      .jsonPath("$.numeroIdentificacion").isEqualTo("");
 	  }
 
 	  @Test
 	  public void Crear() {
-	    Student student = new Student("DNI","12345611","aaaaff","Masculino",new Date(),2);
+	    FamilyMembers fm = new FamilyMembers("DNI","12345611","prueba","0005","Masculino","padre");
 	    client.post()
 	      .uri("/api/v2/st")
 	      .contentType(MediaType.APPLICATION_JSON_UTF8)
 	      .accept(MediaType.APPLICATION_JSON_UTF8)
-	      .body(Mono.just(student), Student.class)
+	      .body(Mono.just(fm), FamilyMembers.class)
 	      .exchange()
 	      .expectStatus().isOk()
 	      .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
 	      .expectBody()
 	      .jsonPath("$.codigoStudent").isNotEmpty()
-	      .jsonPath("$.nombre").isEqualTo("aaaaff");
+	      .jsonPath("$.nombre").isEqualTo("prueba");
 	  } 
 
 	  @Test
 	  public void editarTest() {
-	    Student student = servi.findBynumeroIdentificacion("12345610").block();
+	    FamilyMembers fm = servi.findBynumeroIdentificacion("73226949").block();
 
-	    Student studentEditado = new Student("DNI","73226940","gaa","Masculino",new Date(),2);
+	    FamilyMembers fmEd = new FamilyMembers("DNI","12345611","prueba","0005","Masculino","padre");
 	    client.put()
-	      .uri("/api/v2/st/{id}", Collections.singletonMap("id", student.getCodigoStudent()))
+	      .uri("/api/v2/st/{id}", Collections.singletonMap("id", fm.getCodigoStudent()))
 	      .contentType(MediaType.APPLICATION_JSON_UTF8)
 	      .accept(MediaType.APPLICATION_JSON_UTF8)
-	      .body(Mono.just(studentEditado), Student.class)
+	      .body(Mono.just(fmEd), FamilyMembers.class)
 	      .exchange()
 	      .expectStatus().isOk()
 	      .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
 	      .expectBody()
 	      .jsonPath("$.codigoStudent").isNotEmpty()
-	      .jsonPath("$.nombre").isEqualTo("gaa");
+	      .jsonPath("$.nombre").isEqualTo("prueba");
 	  }
 
 
 	  @Test
 	  public void eliminarTest() {
-	    Student student = servi.findBynumeroIdentificacion("12345678").block();
+	    FamilyMembers fm = servi.findBynumeroIdentificacion("12345678").block();
 	    client.delete()
-	      .uri("/api/v2/st/{id}", Collections.singletonMap("id", student.getCodigoStudent()))
+	      .uri("/api/v2/st/{id}", Collections.singletonMap("id", fm.getCodigoStudent()))
 	      .exchange()
 	      .expectStatus().isOk()
 	      .expectBody()
