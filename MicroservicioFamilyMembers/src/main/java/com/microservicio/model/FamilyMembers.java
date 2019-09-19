@@ -1,6 +1,5 @@
 package com.microservicio.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "FamilyMembers")
 public class FamilyMembers {
@@ -28,4 +26,18 @@ public class FamilyMembers {
   private String genero;
   @NotEmpty(message = "Tipo del Familiar No puede estar vacio")
   private String tipoFamiliar;
+  
+  //Constructor
+  public FamilyMembers(String tipoIdentificacion,
+		String numeroIdentificacion, String nombre,
+		String codigoStudent, String genero,
+		String tipoFamiliar) {
+	this.tipoIdentificacion = tipoIdentificacion;
+	this.numeroIdentificacion = numeroIdentificacion;
+	this.nombre = nombre;
+	this.codigoStudent = codigoStudent;
+	this.genero = genero;
+	this.tipoFamiliar = tipoFamiliar;
+  }
+  
 }
